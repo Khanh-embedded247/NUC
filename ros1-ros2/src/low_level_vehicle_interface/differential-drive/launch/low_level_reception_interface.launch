@@ -1,0 +1,81 @@
+<launch>
+    <arg name="enable_wheel_odom" default="false"/>
+    <arg name="enable_robot" default="false"/>
+    <!--***************** Wheels odometry *****************-->
+    <node if="$(arg enable_wheel_odom)" pkg="differential_drive" type="diff_tf.py" name="diff_tf">
+        <remap from="odom" to="wheel_encoder/odometry"/>
+        <rosparam param="left_ticks_meter">158</rosparam>
+        <rosparam param="right_ticks_meter">167</rosparam>
+        <rosparam param="base_width">0.55</rosparam>
+        <rosparam param="encoder_min">-999999999</rosparam>
+        <rosparam param="encoder_max">999999999</rosparam>
+        <rosparam param="base_frame_id">"base_link"</rosparam>
+        <rosparam param="odom_frame_id">"odom"</rosparam>
+    </node>
+    <!--***************** Wheels PIDs *****************-->
+    <node if="$(arg enable_robot)" pkg="differential_drive" type="pid_velocity.py" name="lpid_velocity">
+        <remap from="wheel" to="lwheel_throttle"/>
+        <remap from="motor_cmd" to="lmotor_cmd"/>
+        <remap from="wheel_vtarget" to="lwheel_vtarget"/>
+        <remap from="wheel_vel" to="lwheel_vel"/>
+        <rosparam param="ticks_meter">158</rosparam> 
+        <rosparam param="Kp">0.4</rosparam> 
+        <rosparam param="Ki">0.001</rosparam> 
+        <rosparam param="Kd">0.02</rosparam>
+        <rosparam param="out_min">-0.3</rosparam>
+        <rosparam param="out_max">0.3</rosparam>
+        <rosparam param="encoder_min">-999999999</rosparam>
+        <rosparam param="encoder_max">999999999</rosparam>
+        <rosparam param="rate">20</rosparam>
+        <rosparam param="timeout_ticks">10</rosparam>
+        <rosparam param="rolling_pts">2</rosparam>
+    </node>
+    <!--1068 --> <!--0.4 -->   <!--0.6 0.4 0 -->
+    <!-- 0.001 -->
+    <!-- 0.02 -->
+    <node if="$(arg enable_robot)" pkg="differential_drive" type="pid_velocity.py" name="rpid_velocity">
+        <remap from="wheel" to="rwheel_throttle"/>
+        <remap from="motor_cmd" to="rmotor_cmd"/>
+        <remap from="wheel_vtarget" to="rwheel_vtarget"/>
+        <remap from="wheel_vel" to="rwheel_vel"/>
+        <rosparam param="ticks_meter">167</rosparam>
+        <rosparam param="Kp">0.7</rosparam> 
+        <rosparam param="Ki">0.0</rosparam> 
+        <rosparam param="Kd">0.00</rosparam>  
+        <rosparam param="out_min">-0.4</rosparam>
+        <rosparam param="out_max">0.4</rosparam> 
+        <rosparam param="encoder_min">-999999999 </rosparam>
+        <rosparam param="encoder_max">999999999</rosparam>
+        <rosparam param="rate">20</rosparam>
+        <rosparam param="timeout_ticks">1</rosparam>
+        <rosparam param="rolling_pts">10</rosparam>
+    </node>
+
+    <!--0.375 -->  
+    <!-- 0.4 0.01 0.02-->
+    <!-- 0.02 -->
+    <!-- 0.2-->
+
+    <!--***************** VESC Drivers *****************-->
+    <include file="$(find vesc_driver)/launch/vesc_driver_node.launch"/>
+
+    <!--************** VESC message converter **************-->
+    <node pkg="vesc_converter" type="vesc_reception_converter" name="vesc_reception_converter"/>
+
+    <!-- ******************TWIST TO VESC MESSAGE********-->
+    <node pkg="differential_drive" type="twist_to_reception_motors.py" name="twist_to_reception_motors" output="screen">
+        <rosparam param="rate">20.0</rosparam>
+        <rosparam param="base_width">0.55</rosparam>
+        <rosparam param="timeout_ticks">1</rosparam>
+        <rosparam param="ticks_meter_left">158</rosparam>
+        <rosparam param="ticks_meter_right">167</rosparam>
+        <rosparam param="Kp">1</rosparam> 
+    </node>
+
+    <!--*** PID velocity ***-->
+    <include file="$(find pid)/launch/differential_drive_sim.launch"/>
+
+    <!--***************** ORB-SLAM2 Launch *****************-->
+    <!-- <node name="lwheel_throttler" type="throttle" pkg="topic_tools" args="messages /lwheel 100 " />
+    <node name="rwheel_throttler" type="throttle" pkg="topic_tools" args="messages /rwheel 100 " /> -->
+</launch>

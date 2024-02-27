@@ -1,0 +1,37 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+
+  <arg name="node_name_right" default="vesc_driver_right" />
+  <arg name="node_name_left" default="vesc_driver_left" />
+
+  <!-- Optionally launch in GDB, for debugging -->
+  <arg name="debug" default="false" />
+  <arg if="$(arg debug)" name="launch_prefix" value="xterm -e gdb --args" />
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+
+  <!-- VESC driver parameters -->
+  <arg name="right_port" default="/dev/vesc_r" />
+  <arg name="left_port" default="/dev/vesc_l" />
+  <arg name="num_motor_pole_pairs_left" default="15" />
+  <arg name="num_motor_pole_pairs_right" default="15" />
+
+  <!-- Parameter for enabling rotor position publishing
+       Possible values are "inductance", "observer", "encoder", "pid_pos", "pid_pos_error", "encoder_observer_error" -->
+  <arg name="rotor_position_source" default="inductance" />
+
+  <!-- VESC driver node -->
+  <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name_right)" ns="right" output="screen" launch-prefix="$(arg launch_prefix)" respawn="true">
+    <param name="rotor_position_source" value="$(arg rotor_position_source)" />
+    <param name="port" value="$(arg right_port)" />
+    <param name="num_motor_pole_pairs" value="$(arg num_motor_pole_pairs_right)"/>
+  </node>
+
+  <!-- VESC driver node -->
+  <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name_left)" ns="left" output="screen" launch-prefix="$(arg launch_prefix)" respawn="true">
+    <param name="rotor_position_source" value="$(arg rotor_position_source)" />
+    <param name="port" value="$(arg left_port)" />
+    <param name="num_motor_pole_pairs" value="$(arg num_motor_pole_pairs_left)" />
+  </node>
+
+
+</launch>

@@ -1,0 +1,53 @@
+<launch>
+    <node name="controller" pkg="pid" type="controller" ns="left_wheel" output="log" >
+      <param name="Kp" value="0.15" />
+      <param name="Ki" value="0.25" />
+      <param name="Kd" value="0.00" />
+      <param name="upper_limit" value="1" />
+      <param name="lower_limit" value="-1" />
+      <param name="windup_limit" value="1" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+      <param name="topic_from_controller" value="/lwheel_pid" />
+      <param name="topic_from_plant" value="/lspeed" />
+      <param name="setpoint_topic" value="/lwheel_vtarget" />
+      <param name="topic_pub_speed" value="/lspeed_pub" /> 
+      <param name="diameter" value="0.17" /> 
+      <remap from="setpoint" to="/lwheel_vtarget" />
+     </node>
+
+    <!-- <node name="setpoint_node_left" pkg="pid" type="setpoint_node" output="screen" /> -->
+<!-- 
+    <node name="servo_sim_node" pkg="pid" type="plant_sim" ns="left_wheel" output="screen" >
+      <param name="plant_order" value="2" />
+    </node> -->
+
+    <node name="controller" pkg="pid" type="controller" ns="right_wheel" output="log" >
+      <param name="Kp" value="0.15" />
+      <param name="Ki" value="0.25" />
+      <param name="Kd" value="0.00" />
+      <param name="upper_limit" value="1" />
+      <param name="lower_limit" value="-1" />
+      <param name="windup_limit" value="1" />
+      <param name="max_loop_frequency" value="10.0" />
+      <param name="min_loop_frequency" value="10.0" />
+      <param name="topic_from_controller" value="/rwheel_pid" />
+      <param name="topic_from_plant" value="/rspeed" />
+      <param name="setpoint_topic" value="/rwheel_vtarget" />
+      <param name="topic_pub_speed" value="/rspeed_pub" /> 
+      <param name="diameter" value="0.17" /> 
+      <!-- <remap from="setpoint" to="/rwheel_vtarget" /> -->
+     </node>
+
+    <!-- <node name="servo_sim_node" pkg="pid" type="plant_sim" ns="right_wheel" output="screen" >
+      <param name="plant_order" value="2" />
+      <param name="reverse_acting" value="true" />
+    </node> -->
+
+    <!-- <node name="setpoint_node" pkg="pid" type="setpoint_node" output="screen" /> -->
+ <!-- /rwheel_vtarget /rwheel_pid /rspeed_pub /right/commands/motor/duty_cycle -->
+    <!-- rqt_plot is a resource hog, so if you're seeing high CPU usage, don't launch it  -->
+    <!-- <node name="rqt_plot" pkg="rqt_plot" type="rqt_plot"
+    args="/lwheel_vtarget /lwheel_pid /lspeed_pub " /> -->
+
+</launch>

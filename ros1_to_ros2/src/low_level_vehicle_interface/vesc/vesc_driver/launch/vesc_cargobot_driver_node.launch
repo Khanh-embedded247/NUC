@@ -1,0 +1,48 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+
+  <arg name="node_name_front_left" default="vesc_driver_front_left" />
+  <arg name="node_name_front_right" default="vesc_driver_front_right" />
+  <arg name="node_name_rear_left" default="vesc_driver_rear_left" />
+  <arg name="node_name_rear_right" default="vesc_driver_rear_right" />
+
+  <!-- Optionally launch in GDB, for debugging -->
+  <arg name="debug" default="false" />
+  <arg if="$(arg debug)" name="launch_prefix" value="xterm -e gdb --args" />
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+
+  <!-- VESC driver parameters -->
+  <arg name="front_left_port"  default="/dev/ttyVESC1_FL" />
+  <arg name="front_right_port" default="/dev/ttyVESC2_FR" />
+  <arg name="rear_left_port"   default="/dev/ttyVESC3_RL" />
+  <arg name="rear_right_port"  default="/dev/ttyVESC4_RR" />
+
+  <!-- Parameter for enabling rotor position publishing
+       Possible values are "inductance", "observer", "encoder", "pid_pos", "pid_pos_error", "encoder_observer_error" -->
+  <arg name="rotor_position_source" default="inductance" />
+
+  <!-- VESC driver node front left -->
+  <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name_front_left)" ns="front_left" output="screen" launch-prefix="$(arg launch_prefix)" respawn="true">
+  <param name="rotor_position_source" value="$(arg rotor_position_source)" />
+  <param name="port" value="$(arg front_left_port)" />
+  </node>
+
+  <!-- VESC driver node front right -->
+  <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name_front_right)" ns="front_right" output="screen" launch-prefix="$(arg launch_prefix)" respawn="true">
+  <param name="rotor_position_source" value="$(arg rotor_position_source)" />
+    <param name="port" value="$(arg front_right_port)" />
+  </node>
+
+  <!-- VESC driver node rear left-->
+  <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name_rear_left)" ns="rear_left" output="screen" launch-prefix="$(arg launch_prefix)" respawn="true">
+  <param name="rotor_position_source" value="$(arg rotor_position_source)" />
+  <param name="port" value="$(arg rear_left_port)" />
+  </node>
+
+<!-- VESC driver node rear right -->
+  <node pkg="vesc_driver" type="vesc_driver_node" name="$(arg node_name_rear_right)" ns="rear_right" output="screen" launch-prefix="$(arg launch_prefix)" respawn="true">
+  <param name="rotor_position_source" value="$(arg rotor_position_source)" />
+    <param name="port" value="$(arg rear_right_port)" />
+  </node>
+
+</launch>

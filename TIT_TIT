@@ -1,0 +1,15 @@
+***************TIT-TIT****************
+
+fastdds discovery -i 0 --udp-address 100.100.0.189 --udp-port 11822
+export ROS_DISCOVERY_SERVER=100.100.0.189:11822
+
+export FASTRTPS_DEFAULT_PROFILES_FILE=super_client_configuration_file.xml
+
+
+ros2 run plotjuggler plotjuggler
+
+
+
+Tài khoản ASUS setup mạng
+username:abc
+Password:Keke123456@

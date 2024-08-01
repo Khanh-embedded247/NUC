@@ -1,0 +1,152 @@
+
+***************flask_to_api.py**************8
+
+### Các Topic trong ROS:
+
+1. **/api_table**:
+   - Loại: Publisher
+   - Mô tả: Được sử dụng để gửi thông tin về vị trí và hướng của bàn từ ứng dụng Flask đến ROS.
+   - Mối liên hệ: Ứng dụng Flask sử dụng nó để gửi dữ liệu vị trí của bàn tới ROS.
+
+2. **/api_status/check_goal**:
+   - Loại: Publisher
+   - Mô tả: Gửi trạng thái khi robot hoàn thành một mục tiêu đến ROS.
+   - Mối liên hệ: Được sử dụng để thông báo cho ROS khi robot đã đạt được một mục tiêu, sau đó robot sẽ chuyển đến vị trí tiếp theo.
+
+3. **/api_status/check_status_table**:
+   - Loại: Publisher
+   - Mô tả: Gửi trạng thái khi robot đến bàn hoặc rời khỏi bàn đến ROS.
+   - Mối liên hệ: Được sử dụng để thông báo cho ROS khi robot đã đến hoặc rời khỏi bàn, có thể được sử dụng để quản lý trạng thái của robot.
+
+4. **/info/roomID**, **/info/userID**, **/info/webID**:
+   - Loại: Publisher
+   - Mô tả: Gửi thông tin về ID phòng, ID người dùng và ID web từ ứng dụng Flask đến ROS.
+   - Mối liên hệ: Cung cấp thông tin cần thiết về ID cho ROS để có thể tương tác với các thành phần khác trong hệ thống.
+
+### Các Hàm Chức Năng:
+
+1. **get_table**:
+   - Mô tả: Xử lý yêu cầu từ client để nhận thông tin về vị trí và hướng của bàn.
+   - Mối liên hệ: Khi client chọn một bàn, thông tin về vị trí của bàn được gửi đến ROS để robot có thể di chuyển đến bàn đó.
+
+2. **recieve_ID**:
+   - Mô tả: Xử lý yêu cầu từ client để nhận thông tin về ID phòng, ID người dùng và ID web.
+   - Mối liên hệ: Cung cấp thông tin ID cần thiết cho ROS để quản lý các phiên làm việc và giao tiếp với các thành phần khác của hệ thống.
+
+3. **is_goal**:
+   - Mô tả: Xử lý yêu cầu từ robot để thông báo khi nhiệm vụ đã hoàn thành.
+   - Mối liên hệ: Khi robot đến được vị trí cần đến, thông tin trạng thái của robot được gửi đến ROS để xác định việc chuyển đến vị trí tiếp theo.
+
+4. **confirm_finish_table**:
+   - Mô tả: Xác nhận việc hoàn thành nhiệm vụ của robot khi đến hoặc rời khỏi bàn.
+   - Mối liên hệ: Khi robot đến hoặc rời khỏi bàn, thông tin được gửi đến ROS để quản lý trạng thái của robot.
+
+### Mối Liên Hệ:
+
+- Flask Application và ROS: Flask được sử dụng để tương tác với người dùng và nhận các yêu cầu HTTP. Khi có yêu cầu, Flask sẽ gửi thông tin tương ứng đến ROS thông qua các topic đã được định nghĩa.
+- Flask Application và Socket.IO Server: Flask cũng kết nối với máy chủ Socket.IO để gửi và nhận dữ liệu từ client và giao tiếp với các thiết bị khác trong hệ thống.
+
+
+********************reception_robot_flask.py***************
+
+### Biến Toàn Cục:
+
+1. **recep_status_flask**: 
+   - Mô tả: Lưu trạng thái của robot nhận được từ Flask.
+   
+2. **table_location, starting_location**: 
+   - Mô tả: Lưu vị trí của bàn và vị trí bắt đầu của robot.
+   
+3. **count**: 
+   - Mô tả: Đếm số lần thực hiện các hoạt động nhất định.
+
+4. **status_goal, robot_state_API**: 
+   - Mô tả: Lưu trạng thái mục tiêu và trạng thái của robot từ API.
+
+### Các Chức Năng:
+
+1. **recieve_ID**: 
+   - Mô tả: Nhận thông tin ID từ client và gửi tin nhắn tới máy chủ Socket.IO để tham gia vào phòng tương ứng.
+   
+2. **is_goal**: 
+   - Mô tả: Xác định trạng thái mục tiêu và trạng thái của robot từ API và gửi tin nhắn tương ứng đến máy chủ Socket.IO.
+   
+3. **private_message**: 
+   - Mô tả: Xử lý các tin nhắn riêng tư từ máy chủ Socket.IO, chẳng hạn như việc cập nhật vị trí của robot hoặc bàn.
+
+### Kết Nối và Khởi Chạy:
+
+1. **Flask Application và Socket.IO Server**: 
+   - Flask kết nối với máy chủ Socket.IO để gửi và nhận dữ liệu.
+   
+2. **Khởi Chạy Flask và Socket.IO Client**: 
+   - Hai luồng được sử dụng để chạy Flask và kết nối với máy chủ Socket.IO. Điều này giúp đảm bảo rằng ứng dụng vẫn phản hồi mượt mà trong quá trình xử lý yêu cầu từ người dùng và nhận dữ liệu từ máy chủ.
+
+
+
+********funtion_move.py**************
+
+### Các Hàm:
+
+1. **create_goal(x, y, z, xx, yy, zz, ww)**:
+   - Mô tả: Tạo một mục tiêu di chuyển dựa trên các thông số xác định.
+   - Tham số:
+     - `x`, `y`, `z`: Tọa độ của mục tiêu.
+     - `xx`, `yy`, `zz`, `ww`: Các giá trị quaternion của mục tiêu.
+
+2. **get_location_list(data)**:
+   - Mô tả: Tạo danh sách các mục tiêu di chuyển từ dữ liệu được cung cấp.
+   - Tham số:
+     - `data`: Dữ liệu chứa thông tin vị trí và hướng của các mục tiêu.
+   - Trả về: Danh sách các mục tiêu di chuyển.
+
+3. **check_table(goal1, goal2)**:
+   - Mô tả: Kiểm tra xem hai mục tiêu di chuyển có giống nhau không.
+   - Tham số:
+     - `goal1`, `goal2`: Hai mục tiêu di chuyển cần được so sánh.
+   - Trả về: `True` nếu giống nhau, ngược lại trả về `False`.
+
+4. **is_move(robot_velocity)**:
+   - Mô tả: Kiểm tra xem robot có đang di chuyển không dựa trên tốc độ robot.
+   - Tham số:
+     - `robot_velocity`: Tốc độ hiện tại của robot.
+   - Trả về: `0` nếu robot không di chuyển, ngược lại trả về `1`.
+
+
+Biến Toàn Cục:
+CHECK_GOAL_THRESH:
+Mô tả: Ngưỡng cho phép để xác định xem hai mục tiêu di chuyển giống nhau hay không.
+CHECK_VEL_THRESH:
+Mô tả: Ngưỡng cho phép để xác định xem robot có đang di chuyển hay không.
+TIME_THRESHOLD:
+Mô tả: Ngưỡng thời gian cho phép.
+
+
+
+
+***********service_robot_flask.py***********
+Trong tệp `reception_robot_flask.py`, chúng ta có các phần sau:
+
+1. **Khởi tạo ROS Node và ROS Publisher**:
+   - Khởi tạo ROS Node với tên `service_robot_flask_node`.
+   - Tạo một ROS Publisher để phát thông tin về trạng thái của robot đến chủ đề `/service_state`.
+
+2. **Các API của Flask**:
+   - `'/check'`: Kiểm tra kết nối.
+   - `'/login_info'`: Nhận thông tin đăng nhập và gửi lại tin hiệu `join_room` cho server.
+   - `'/check_goal_and_state'`: Kiểm tra trạng thái của robot và gửi tin hiệu tương ứng đến web client.
+
+3. **Hàm xử lý tin nhắn từ SocketIO Server**:
+   - Hàm `private_message`: Xử lý tin nhắn từ server và thực hiện các hành động tương ứng, như di chuyển robot đến quầy dịch vụ, giao đồ đến bàn, hoặc quay về vị trí chờ đợi.
+
+4. **Kết nối với SocketIO Server**:
+   - Sử dụng thư viện `socketio` để kết nối với server qua namespace `'/robotic'`.
+
+5. **Chạy Flask và SocketIO trong các luồng riêng biệt**:
+   - Sử dụng luồng để chạy cả Flask và SocketIO đồng thời.
+
+6. **Các biến toàn cục**:
+   - `service_status_flask`: Trạng thái của robot trong hệ thống Flask.
+   - `table_location`, `waiting_location`, `service_bar_location`: Vị trí của robot tương ứng với các hành động được yêu cầu.
+
+

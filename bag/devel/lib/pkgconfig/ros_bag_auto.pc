@@ -1,0 +1,8 @@
+prefix=/workspaces/khanh247/bag/devel
+
+Name: ros_bag_auto
+Description: Description of ros_bag_auto
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

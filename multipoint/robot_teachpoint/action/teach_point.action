@@ -1,0 +1,15 @@
+#Goal
+int32 goal_key
+string goal_pos
+uint16 goal_pan
+uint16 goal_tilt
+uint16 goal_zoom
+int32 goal_rtime
+int8 goal_buffer
+---
+#Result
+string result_key
+int8 result_status
+---
+#Feedback
+string feedback_key

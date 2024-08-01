@@ -1,0 +1,51 @@
+point:
+  a:
+    buffer: 1
+    cpan: 0
+    ctilt: 0
+    czoom: 0
+    rtime: 0
+    w: 0.6
+    x: 2.551
+    y: -2.108
+    z: -0.8
+  b:
+    buffer: 1
+    cpan: 0
+    ctilt: 0
+    czoom: 0
+    rtime: 0
+    w: 0.7362544630764458
+    x: 1.9184556007385254
+    y: -0.038958314806222916
+    z: -0.6767047846735047
+  home:
+    buffer: 1
+    cpan: 0
+    ctilt: 0
+    czoom: 0
+    rtime: 0
+    w: 1.0
+    x: 0.058
+    y: 0.045
+    z: -0.01
+task:
+  task_check:
+    loop: 1
+    points:
+    - home
+    - b
+    - a
+    wait: 0
+  test:
+    loop: 0
+    points:
+    - A
+    - B
+    wait: 0
+  test1:
+    loop: 1
+    points:
+    - NB13W
+    - NB14W
+    wait: 10

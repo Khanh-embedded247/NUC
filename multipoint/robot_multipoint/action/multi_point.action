@@ -1,0 +1,13 @@
+#Goal
+int32 goal_key
+string  goal_name
+string[] goal_points
+int8 goal_loop
+int32 goal_wait
+---
+#Result
+string result_key
+int8 result_status
+---
+#Feedback
+string feedback_key

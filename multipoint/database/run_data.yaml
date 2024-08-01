@@ -1,0 +1,23 @@
+running:
+  beforeHome: Manual
+  curState: Stop
+  lastest_task: task_check
+  lastest_task_index: 2
+  prevState: Work
+startup:
+  dock:
+    w: 1.0
+    x: -0.068
+    y: 0.009
+    z: -0.01
+  dock_pose:
+    w: 0.9999622274577387
+    x: -0.4546927873561695
+    y: -0.0674757006139549
+    z: 0.008691585457073176
+  home:
+    w: 1.0
+    x: 1.049
+    y: -0.038
+    z: -0.02
+  task: task2

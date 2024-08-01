@@ -1,0 +1,111 @@
+alias nb='nano ~/.bashrc'
+alias sb='source ~/.bashrc'
+
+alias ssn='ssh -x nvidia@192.168.0.2'
+
+alias carto_mapping='roslaunch robot_mapping cartographer_mapping.launch'
+alias finish_trajectory="rosservice call /finish_trajectory 0"
+alias save_map='rosservice call /write_state "{filename: '${HOME}/Desktop/12a.pbstream'}"'
+alias convert='rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem=${HOME}/Desktop/12a -pbstream_filename=${HOME}/Desktop/12a.pbstream -resolution=0.05'
+
+#alias nav_teb="roslaunch robot_mapping robot_navigation_amcl_teb_2lidars.launch"
+alias nav_teb_mbf="roslaunch robot_mapping robot_navigation_amcl_teb_2lidars_mbf.launch"
+
+alias dd="roslaunch differential_drive low_level_reception_interface_teb.launch"
+alias init_pose="rosrun broadcast_tf pose_estimate"
+alias teleop="rosrun teleop_twist_keyboard reception_teleop_twist_keyboard.py"
+alias ccm="rosservice call /move_base_flex/clear_costmaps"
+
+alias cdt='cd ~/test_robot_ws/src/phenikaax_web_robot_api/robot_state/scripts'
+
+alias info="python3 /home/robotic/test_robot_ws/src/phenikaax_web_robot_api/robot_state/scripts/robot_info.py"
+alias kinfo="pkill -9 -f robot_info.py"
+
+alias deli="python3 /home/robotic/test_robot_ws/src/phenikaax_web_robot_api/robot_state/scripts/delivery.py"
+alias kd="pkill -9 -f delivery.py"
+
+export ROS_MASTER_URI="http://192.168.0.1:11311/"
+export ROS_HOSTNAME="192.168.0.1"
+export ROS_IP="192.168.0.1"
+
+
+alias tittit="docker exec -it 3bb2bc765f75 /bin/bash"
+alias star_tittit="docker start 3bb2bc765f75"
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/robotic/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/robotic/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/robotic/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/robotic/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+
+
+
+
+1.SLam - Quét Map
+ros2 launch robot_bringup robot_slam.launch.py
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+2.Save Map
+ros2 run nav2_map_server map_saver_cli -f /workspaces/indooRobot_SLAM/[name_map]
+3.Chỉnh sửa file map đẻ launch 
+/tit_tit_robot/indooRobot_SLAM/tittit_ros2/src/robot_nav2/launch/robot_nav2.launch.py
+Chỉnh sử name_map đã được lưu trong quá trình Slam
+
+4.	Navigation Launch
+ros2 launch robot_bringup robot_nav2.launch.py
+
+5.Các việc cần làm 
+Di chuyển đến các diểm cần lưu : Y4, Y3 , Phòng khám, ....
+Lưu bawnghf cách sử dụng Post Man trực tiếp gửi yêu cầu cho ROBOT với địa chỉ "http://100.100.0.189:9000/phenet_api_screen
+{
+    "robot_name": "tittit",
+    "request_id": 4,
+    "name_pose": "PK",
+    "goal_pose": {
+        "pos": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "ori":{
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+        }
+    }
+  
+}
+
+6.Save Initital pose 
+Chú ý requset_ID : -11
+{
+    "robot_name": "tittit",
+    "request_id": -11,
+    "name_pose": "PK",
+    "goal_pose": {
+        "pos": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "ori":{
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.0
+        }
+    }
+  
+}
+
+
